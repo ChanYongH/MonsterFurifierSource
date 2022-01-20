@@ -69,6 +69,7 @@ public class MonsterInventory : Inventory
     {
         monsters.Add(monster); // List<Monster>
         int lastNum = monsters.Count - 1; // List의 마지막int값을 캐싱 해줌
+        //monsters[lastNum].exp = 0;
         monsters[lastNum].transform.parent.GetChild(0).GetChild(0).GetComponent<Button>().onClick.AddListener(ShowMonsters);
         monsters[lastNum].tag = "PlayerMonster";
         monsters[lastNum].playerMonster = true;

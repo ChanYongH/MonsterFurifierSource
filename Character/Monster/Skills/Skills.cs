@@ -131,13 +131,14 @@ public class Skills : MonoBehaviour
     }
     public IEnumerator SpecialAttackCo(int attKind, float damage) // 다른 속성에서도 사용
     {
-        monster.ani.SetTrigger("isAttack"); // 공격 모션 발동
-        skillUsingTime = monster.ani.GetCurrentAnimatorStateInfo(0).length; // 공격 모션 지속시간
-        Debug.Log("애니메이션 시간 : " + skillUsingTime);
-        StartCoroutine(attackSkillEffect[attKind].ObjectSwitch(2)); // 확장 메서드를 이용해서 2초뒤에 꺼지게 설정
-        yield return new WaitForSecondsRealtime(skillUsingTime);
-        if (!skillInfo && BattleManger.battle) // 스킬 발동 효과
+        if (!skillInfo && BattleManger.battle)
         {
+            monster.ani.SetTrigger("isAttack"); // 공격 모션 발동
+            skillUsingTime = monster.ani.GetCurrentAnimatorStateInfo(0).length; // 공격 모션 지속시간
+            StartCoroutine(attackSkillEffect[attKind].ObjectSwitch(2)); // 확장 메서드를 이용해서 2초뒤에 꺼지게 설정
+        
+            yield return new WaitForSecondsRealtime(skillUsingTime);
+
             if (monster.playerMonster) // 플레이어 몬스터라면 
             {
                 enemyMonster = GameObject.FindGameObjectWithTag("EnemyMonsterOnBattle").GetComponent<Monster>();
@@ -155,12 +156,14 @@ public class Skills : MonoBehaviour
 
     public IEnumerator NomalAttackCo(float damage)
     {
-        monster.ani.SetTrigger("isAttack"); // 공격 모션 발동
-        skillUsingTime = monster.ani.GetCurrentAnimatorStateInfo(0).length; // 공격 모션 지속시간
-        // 노말 스킬은 파티클이 없다.
-        yield return new WaitForSecondsRealtime(skillUsingTime);
-        if (!skillInfo && BattleManger.battle) // 스킬 발동 효과
+        if (!skillInfo && BattleManger.battle)
         {
+            monster.ani.SetTrigger("isAttack"); // 공격 모션 발동
+            skillUsingTime = monster.ani.GetCurrentAnimatorStateInfo(0).length; // 공격 모션 지속시간
+
+            // 노말 스킬은 파티클이 없다.
+            yield return new WaitForSecondsRealtime(skillUsingTime);
+
             if (monster.playerMonster) // 플레이어 몬스터라면 
             {
                 enemyMonster = GameObject.FindGameObjectWithTag("EnemyMonsterOnBattle").GetComponent<Monster>();
@@ -177,17 +180,20 @@ public class Skills : MonoBehaviour
     }
     public IEnumerator BuffEffect(bool isBuff)
     {
-        monster.ani.SetTrigger("isAttack");
-        skillUsingTime = monster.ani.GetCurrentAnimatorStateInfo(0).length;
-        if (monster.playerMonster) // 플레이어 몬스터라면 
-            enemyMonster = GameObject.FindGameObjectWithTag("EnemyMonsterOnBattle").GetComponent<Monster>();
-        else
-            enemyMonster = GameObject.FindGameObjectWithTag("PlayerMonster").GetComponent<Monster>();
-        if (isBuff) 
-            StartCoroutine(monster.skill.buffEffect[0].ObjectSwitch(2));
-        else
-            StartCoroutine(enemyMonster.skill.buffEffect[1].ObjectSwitch(2));
-        yield return new WaitForSecondsRealtime(skillUsingTime);
+        if (!skillInfo)
+        {
+            monster.ani.SetTrigger("isAttack"); // 공격 모션 발동
+            skillUsingTime = monster.ani.GetCurrentAnimatorStateInfo(0).length; // 공격 모션 지속시간
+            if (monster.playerMonster) // 플레이어 몬스터라면 
+                enemyMonster = GameObject.FindGameObjectWithTag("EnemyMonsterOnBattle").GetComponent<Monster>();
+            else
+                enemyMonster = GameObject.FindGameObjectWithTag("PlayerMonster").GetComponent<Monster>();
+            if (isBuff)
+                StartCoroutine(monster.skill.buffEffect[0].ObjectSwitch(2));
+            else
+                StartCoroutine(enemyMonster.skill.buffEffect[1].ObjectSwitch(2));
+            yield return new WaitForSecondsRealtime(skillUsingTime);
+        }
     }
     public void NomalAttack1() // 1레벨
     {

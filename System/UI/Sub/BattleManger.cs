@@ -107,17 +107,21 @@ public class BattleManger : MonoBehaviour
     public IEnumerator NextTurn(bool judge)
     {
         bool playerturnJedge = playerMonster.endurance >= enemyMonster.endurance;
-        bool enemyturnJedge = playerMonster.endurance < enemyMonster.endurance; // 나중에 구현 해봐야 함 
+        bool enemyturnJedge = playerMonster.endurance < enemyMonster.endurance; // 나중에 구현 해봐야 함
+
+
+        //yield return new WaitForSecondsRealtime(1);
+        Debug.Log("플레이어" + playerMonster.name);
+        if (playerMonster.isDead)
+        {
+            yield return new WaitForSecondsRealtime(uiManager.flowTime);
+            uiManager.BattleResult(0, 0, false);
+            yield break;
+        }
         if (enemyMonster.isDead) // 플레이어가 선공일 때 죽음
         {
             yield return new WaitForSecondsRealtime(uiManager.flowTime);
             uiManager.BattleResult(enemyMonster.exp, enemyMonster.money, true); // 결과창(UI)를 보여주고 // 만약 레벨업을 했으면 ?
-            yield break;
-        }
-        else if (playerMonster.isDead)
-        {
-            yield return new WaitForSecondsRealtime(uiManager.flowTime);
-            uiManager.BattleResult(0, 0, false);
             yield break;
         }
         if(judge)
@@ -134,8 +138,6 @@ public class BattleManger : MonoBehaviour
             }
             enemyMonster.endurance -= (enemyMonster.agility - (int)enemyMonsterSkill.buff[(int)BuffList.agility]);
             StartCoroutine(uiManager.EnemyUseSkillCo(enemyMonster, enemyMonsterSkill.nameToKorean[uiManager.enemySetSkill]));
-            //StartCoroutine(uiManager.EnemyUseSkillCo(enemyMonster.monsterName, enemyMonsterSkill.nameToKorean[uiManager.enemySetSkill]));
-            //enemyMonsterSkill.UseSkill();
         }
         else
         {
@@ -143,8 +145,6 @@ public class BattleManger : MonoBehaviour
             {
                 enemyMonster.endurance -= (enemyMonster.agility - (int)enemyMonsterSkill.buff[(int)BuffList.agility]);
                 StartCoroutine(uiManager.EnemyUseSkillCo(enemyMonster, enemyMonsterSkill.nameToKorean[uiManager.enemySetSkill]));
-                //StartCoroutine(uiManager.EnemyUseSkillCo(enemyMonster.monsterName, enemyMonsterSkill.nameToKorean[uiManager.enemySetSkill]));
-                //enemyMonsterSkill.UseSkill();
                 yield return new WaitForSecondsRealtime(uiManager.flowTime * 2); // 3초뒤에 다시 전투 시작 화면으로
                 uiManager.BattleStart();
                 yield break;
@@ -166,16 +166,16 @@ public class BattleManger : MonoBehaviour
             uiManager.BattleResult(enemyMonster.exp, enemyMonster.money, true);
             yield break;
         }
-        else if (playerMonster.isDead)
+        if (playerMonster.isDead)
         {
             yield return new WaitForSecondsRealtime(uiManager.flowTime);
             uiManager.BattleResult(0, 0, false);
             yield break;
         }
-        if (judge)
-            yield return new WaitForSecondsRealtime(uiManager.flowTime * 2 ); // 3초뒤에 상대편이 공격
+        if (judge) // 플레이어가 공격 한 후(몬스터 공격 차례
+            yield return new WaitForSecondsRealtime(uiManager.flowTime + enemyMonsterSkill.skillUsingTime); // 3초뒤에 상대편이 공격
         else
-            yield return new WaitForSecondsRealtime(uiManager.flowTime * 2); //playerMonsterSkill.skillUsingTime
+            yield return new WaitForSecondsRealtime(uiManager.flowTime + playerMonsterSkill.skillUsingTime); //playerMonsterSkill.skillUsingTime
 
 
         uiManager.BattleStart();

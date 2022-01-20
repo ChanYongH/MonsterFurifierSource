@@ -28,7 +28,7 @@ public class UIMainMenu : MonoBehaviour
     {
         notification.SetActive(true);
         UIManager.setPlayerName = inputField.text; // InputField에 입력한 값을 몬스터 이름으로 바꿔준다.
-        startGameForPlayer.text = "몬스터의 이름을 " + inputField.text + "로 설정하시겠습니까?";
+        startGameForPlayer.text = "플레이어의 이름을 ' " + inputField.text + " ' 으로(로) 설정하시겠습니까?";
     }
     public void SettingName2(bool yes) 
     {

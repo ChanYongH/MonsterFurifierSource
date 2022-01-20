@@ -321,21 +321,19 @@ public class Monster : Character
     }
     public override void Dead()
     {
-        StartCoroutine(DeadCo());
         isDead = true;
-        exp = level * 10 + UnityEngine.Random.Range(5, 10);
-        //isDead = true;
-        //exp = level * 10 + UnityEngine.Random.Range(5, 10);
-        money = level * 50 + 100;
+        StartCoroutine(DeadCo());
+        if (!playerMonster)
+        {
+            exp = level * 10 + UnityEngine.Random.Range(5, 10);
+            money = level * 50 + 100;
+        }
+        ani.SetBool("isDead", true);
+        Debug.Log("Á×À½");
     }
     IEnumerator DeadCo()
     {
-        yield return new WaitForSecondsRealtime(uiManager.flowTime);
-        //isDead = true;
-        gameObject.SetActive(false);
-    }
-    public void PlayerMonsterDead()
-    {
+        yield return new WaitForSecondsRealtime(4);
         gameObject.SetActive(false);
     }
 

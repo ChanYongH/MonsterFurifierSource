@@ -538,7 +538,9 @@ public class UIManager : Singleton<UIManager>
         skillChangeCanvas.transform.GetChild(0).gameObject.SetActive(false);
         changeSkillCanvas.transform.GetChild(0).gameObject.SetActive(false);
         BattleManger.battle = false;
-        enemyMonster.tag = "EnemyMonster";
+        if (!enemyMonster.playerMonster)
+            enemyMonster.tag = "EnemyMonster";
+
         enemyMonster.transform.position = enemyMonster.monsterWorldPos.transform.position;
         PlayerWorld.battleOut.Invoke();
     }
@@ -916,15 +918,11 @@ public class UIManager : Singleton<UIManager>
 
     void CaputreSuccess()
     {
-        enemyMonster.isDead = true;
         for (int i = 0; i < sequnceCanvas.GetChild(0).childCount; i++)
         {
             sequnceCanvas.GetChild(0).GetChild(i).gameObject.SetActive(false);
             sequnceCanvas.GetChild(1).GetChild(i).gameObject.SetActive(false);
         }
-        //enemyMonster.isDead = true;
-        //enemyMonster.playerMonster = true;
-        //enemyMonster.tag = "PlayerMonster";
         enemyMonster.gameObject.SetActive(false);
         enemyMonsterUI.SetActive(false);
         captureCanvas.SetActive(true);
@@ -995,8 +993,9 @@ public class UIManager : Singleton<UIManager>
     IEnumerator CaptureCanvasOffCo(float time)
     {
         //Debug.Log("왜 3번 출력?");
-        monsterInven.GetMonster(enemyMonster); // 몬스터를 몬스터 인벤토리에 추가 해줌
+        playerMonsterUI.SetActive(false);
         yield return new WaitForSecondsRealtime(time);
+        monsterInven.GetMonster(enemyMonster); // 몬스터를 몬스터 인벤토리에 추가 해줌
         captureCanvas.SetActive(false);
         for (int i = 0; i < captureUI.Count; i++)
             captureUI[i].SetActive(false);

@@ -10,6 +10,7 @@ public class MonsterHormone : MonoBehaviour
     public float[] randomMove = new float[3];
     Vector3 randomPos;
     public int count = 0;
+    Monster monster;
 
     private void Start()
     {
@@ -21,6 +22,7 @@ public class MonsterHormone : MonoBehaviour
         randomMove[2] = transform.parent.position.z; //+ Random.Range(-0.5f, 0.5f);
         randomPos = new Vector3(randomMove[0], randomMove[1], transform.position.z);//transform.position.z + randomMove[2]);
         StartCoroutine(RandomMoveCo());
+        monster = GetComponentInParent<Monster>();
     }
 
     private void Update()
@@ -50,6 +52,7 @@ public class MonsterHormone : MonoBehaviour
         if (other.GetComponent<CaptureBullet>() != null)
         {
             uiManager.captureState = true; // 캡처 성공!
+            monster.exp = monster.level * 10 + Random.Range(5, 10);
             Debug.Log("맞았다!");
         }
     }
